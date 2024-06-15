@@ -1,0 +1,78 @@
+@keyframes name-row-left {
+  0% {
+    transform: translateX(calc(50% - 50vw));
+  }
+
+  100% {
+    transform: translateX(-51vw);
+  }
+}
+
+@keyframes name-row-right {
+  0% {
+    transform: translateX(calc(-50% + 50vw));
+  }
+
+  100% {
+    transform: translateX(calc(51vw));
+  }
+}
+
+@keyframes name-row-bottom {
+  0% {
+    transform: scale(0);
+    filter: opacity(0);
+  }
+
+  100% {
+    transform: scale(1);
+    filter: opacity(1);
+  }
+}
+
+.name-list {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  z-index: 11;
+  color: #fff;
+  font-family: "Metropolis-Black";
+  text-transform: uppercase;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.name-list:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-image: radial-gradient(at center, #0003, #000);
+  filter: opacity(0.9);
+}
+
+.name-row {
+  display: flex;
+  gap: var(--gap-row);
+  line-height: 85%;
+}
+
+.name-row:nth-child(even) {
+  animation: name-row-left 420s linear infinite;
+}
+
+.name-row:nth-child(odd) {
+  animation: name-row-right 420s linear infinite;
+}
+
+.name {
+  filter: opacity(0);
+}

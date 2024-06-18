@@ -1,68 +1,88 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nuvem de nomes</title>
+    <link rel="stylesheet" href="./css/font.css" />
+    <link rel="stylesheet" href="./css/reset.css" />
+    <link rel="stylesheet" href="./css/gallery-images.css" />
+    <link rel="stylesheet" href="./css/gallery-rows.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nuvem de nomes</title>
-  <link rel="stylesheet" href="./css/font.css">
-  <link rel="stylesheet" href="./css/reset.css">
-  <link rel="stylesheet" href="./css/gallery-images.css">
-  <link rel="stylesheet" href="./css/gallery-rows.css">
-</head>
+  <body>
+    <div class="background">
+      <img class="img img-1" src="./img/img-1.jpg" alt="" />
+      <img class="img img-2" src="./img/img-2.jpg" alt="" />
+      <img class="img img-3" src="./img/img-3.jpg" alt="" />
+      <img class="img img-4" src="./img/img-4.jpg" alt="" />
+      <img class="img img-5" src="./img/img-5.jpg" alt="" />
+      <img class="img img-6" src="./img/img-6.jpg" alt="" />
+    </div>
+    <div class="name-list"></div>
+  </body>
 
-<body>
-  <div class="background">
-    <img class="img img-1" src="./img/img-1.jpg" alt="" />
-    <img class="img img-2" src="./img/img-2.jpg" alt="" />
-    <img class="img img-3" src="./img/img-3.jpg" alt="" />
-    <img class="img img-4" src="./img/img-4.jpg" alt="" />
-    <img class="img img-5" src="./img/img-5.jpg" alt="" />
-    <img class="img img-6" src="./img/img-6.jpg" alt="" />
-  </div>
-  <div class="name-list"></div>
-</body>
+  <script>
+    const queryStrings = new URLSearchParams(globalThis?.location?.search);
+    const sheedId = "sheedId";
+    const apiKey = "apiKey";
+    const rows = "rows";
+    const repeat = "repeat";
+    const queriesRequire = [sheedId, apiKey];
 
-<script>
-  const spreadsheetId = "1yRBrImN-i8fDjh5iFoy3Jg3pF-e2NfSEBDYkxJez0IQ";
-  const apiKey = "AIzaSyBErcmcetz2Ub1rdeum06kdNylaeB1xtTs";
-  const range = "A1:T20";
+    if (queriesRequire.every((item) => queryStrings.get(item))) {
+      const querySheetId = queryStrings.get(sheedId);
+      const queryApiKey = queryStrings.get(apiKey);
+      const queryRange = queryStrings.get("range") || "A1:T20";
+      const queryRows = Number(queryStrings.get(rows)) || 3;
+      const queryRepeat = Number(queryStrings.get(repeat)) || 4;
+      fetch(
+        `https://content-sheets.googleapis.com/v4/spreadsheets/${querySheetId}/values/${queryRange}?key=${queryApiKey}`
+      )
+        .then((e) => e.json())
+        .then(({ values }) => {
+          const namesByColumn = [];
+          const delayBetweenMiliseconds = (min, max) =>
+            Math.floor(Math.random() * (max - min + 1) + min);
 
-  fetch(
-    `https://content-sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`
-  )
-    .then((e) => e.json())
-    .then(({ values }) => {
-      const namesByColumn = [];
-      const delayBetweenMiliseconds = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
-
-      values.forEach((item) => {
-        item.forEach((text, i) => {
-          if (!namesByColumn[i]) {
-            namesByColumn[i] = [];
-          }
-          namesByColumn[i].push(text);
-        });
-      });
-      [...new Array(3)].forEach(() => {
-        namesByColumn.forEach((row) => {
-          document
-            .querySelector('.name-list')
-            .insertAdjacentHTML('beforeend', '<div class="name-row"></div>');
-          [...new Array(2)].forEach(() => {
-            row.forEach((data, j) => {
-              document
-                .querySelector(".name-list .name-row:last-child")
-                .insertAdjacentHTML(
-                  "beforeend",
-                  `<div class="name" style="animation: name-row-bottom 0.6s ${delayBetweenMiliseconds(400, 2000) + 1200}ms forwards">${data}</div>`
-                );
+          values.forEach((item) => {
+            item.forEach((text, i) => {
+              if (!namesByColumn[i]) {
+                namesByColumn[i] = [];
+              }
+              namesByColumn[i].push(text);
             });
           });
-        })
-      })
-    });
-</script>
-
+          [...new Array(queryRows)].forEach(() => {
+            namesByColumn.forEach((row) => {
+              document
+                .querySelector(".name-list")
+                .insertAdjacentHTML(
+                  "beforeend",
+                  '<div class="name-row"></div>'
+                );
+              [...new Array(queryRepeat)].forEach(() => {
+                row.forEach((data, j) => {
+                  document
+                    .querySelector(".name-list .name-row:last-child")
+                    .insertAdjacentHTML(
+                      "beforeend",
+                      `<div class="name" style="animation: name-row-bottom 0.6s ${
+                        delayBetweenMiliseconds(400, 2000) + 1200
+                      }ms forwards">${data}</div>`
+                    );
+                });
+              });
+            });
+          });
+        });
+    } else {
+      queriesRequire.forEach((item) => {
+        if (!queryStrings.get(item)) {
+          console.error(`🚨"${item}" is require query-string`);
+        }
+      });
+    }
+  </script>
 </html>

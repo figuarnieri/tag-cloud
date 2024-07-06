@@ -62,21 +62,21 @@
 .name-row {
   display: flex;
   gap: var(--gap-row);
-  line-height: 85%;
   will-change: transform;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 .name-row:nth-child(even) {
-  animation: name-row-left calc(2 * 60s) linear infinite;
+  animation-name: name-row-left;
 }
 
 .name-row:nth-child(odd) {
-  animation: name-row-right calc(2 * 60s) linear infinite;
+  animation-name: name-row-right;
 }
 
 .name {
   filter: opacity(0);
   transform: scale(0);
   will-change: transform, filter;
-  text-shadow: 0px 0px 12px #000;
 }
